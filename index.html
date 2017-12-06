@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Document</title>
+    <script src="https://cdn.bootcss.com/echarts/3.8.5/echarts-en.common.min.js"></script>
+    <style>
+        h1 {background-color:aqua;}
+    </style>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 900px;height:600px;"></div>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            toolbox: {"show": true,
+                      'feature':{'dataView':{"show":true},
+                                  "magicType":{"show":true, type:['line','bar']},
+                                  "saveAsImage":{"show":true},
+                                  "restore": {"show":true}  }},
+            legend: {
+                data:[] //data:['销量']
+            },
+            xAxis: {
+                data: ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月"]
+            },
+            yAxis: {},
+            series: []
+            // series: [{
+            //     name: '销量', //name: '销量',
+            //     type: 'bar',
+            //     data: [5, 20, 36, 10, 10, 20]
+            // }]
+        };
+        function createLoadOption(r, name){
+            return function(){
+                console.log("load data");
+                console.log(name);
+                if (r.readyState === XMLHttpRequest.DONE){
+                    if(r.status === 200){
+                        console.log(r.responseText);
+                        var data = JSON.parse(r.responseText); 
+                        option.legend.data.push(name);
+                        option.series.push({"name":name, "type":'line', "data":data});
+                    }
+                }
+                myChart.setOption(option);
+                } ;
+        }
+        var name = "陈伟";
+        var httprequest = new XMLHttpRequest();
+        httprequest.onreadystatechange = createLoadOption(httprequest, name);
+        httprequest.open('GET', 'http://127.0.0.1:8080/api/name/陈伟')
+        httprequest.send()
+
+        name = "危王雨";
+        var httprequest1 = new XMLHttpRequest();
+        httprequest1.onreadystatechange = createLoadOption(httprequest1, name);
+        httprequest1.open('GET', 'http://127.0.0.1:8080/api/name/危王雨')
+        httprequest1.send()
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+</body>
+</html>
