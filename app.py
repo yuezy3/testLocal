@@ -5,7 +5,8 @@ import os.path
 import urllib.parse
 
 here = os.path.dirname(os.path.abspath(__file__))
-with open('project/data.txt') as f:
+os.chdir(here)
+with open('data.txt') as f:
     data = eval(f.read())
 def uniBytes2str(s):
     return s.encode('iso-8859-1').decode('utf-8')
